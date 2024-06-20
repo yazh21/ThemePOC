@@ -1,0 +1,86 @@
+﻿@using System.Globalization
+@using MudBlazor
+@using MudBlazor.ThemeManager
+@using ThemePOC.Client.Theme
+
+@inherits LayoutComponentBase
+
+@* <MudThemeProvider /> *@
+<MudThemeProvider Theme="SelectedTheme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="0">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudSpacer />
+        @* added by me *@
+        <MudMenu ActivationEvent="@MouseEvent.LeftClick" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter" Dense="true">
+            <ActivatorContent>
+                <MudButton StartIcon="@Icons.Material.Filled.Palette" Style="color:white;" EndIcon="@Icons.Material.Filled.KeyboardArrowDown">Themes</MudButton>
+            </ActivatorContent>
+            <ChildContent>
+                <MudMenuItem Icon="@Icons.Material.Filled.DarkMode" IconColor="Color.Default" OnClick="@( () => ChangeTheme(MyDarkTheme))">Dark Mode</MudMenuItem>
+                <MudMenuItem Icon="@Icons.Material.Filled.LightMode" IconColor="Color.Warning" OnClick="@( () => ChangeTheme(MyLightTheme))">Light Mode</MudMenuItem>
+
+            </ChildContent>
+        </MudMenu>
+        @* added by me *@
+        <MudIconButton Icon="@Icons.Custom.Brands.MudBlazor" Color="Color.Inherit" Link="https://mudblazor.com/" Target="_blank" />
+        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/MudBlazor/MudBlazor/" Target="_blank" />
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6">TablePOC</MudText>
+        </MudDrawerHeader>
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    bool _drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+    private MudTheme SelectedTheme;
+    private MudTheme MyLightTheme = new LightTheme();
+    private MudTheme MyDarkTheme = new DarkTheme();
+
+    private ThemeManagerTheme _themeManager = new ThemeManagerTheme
+        {
+            Theme = new MudBlazorAdminDashboard(),
+            DrawerClipMode = DrawerClipMode.Always,
+            FontFamily = "Montserrat",
+            DefaultBorderRadius = 6,
+            AppBarElevation = 1,
+            DrawerElevation = 1
+        };
+
+    protected override async Task OnInitializedAsync()
+    {
+        SelectedTheme = MyLightTheme;
+        StateHasChanged();
+    }
+    void ChangeTheme(MudTheme theme)
+    {
+        SelectedTheme = theme;
+        StateHasChanged();
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+
+        //this function is called on every page.
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+    }
+}
